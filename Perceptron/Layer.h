@@ -17,7 +17,7 @@ public:
     Neuron neuronAt(unsigned long index);
     unsigned long neuronsCount();
     DataVector prepareErrorForPropagation(DataVector const &errors, unsigned long nextLayerNeuronsNumber);
-
+    void updateNeuronsWeights(DataVectors const &inputs, DataVector const &errors);
 private:
     std::vector<Neuron> neuronsVector;
 };
