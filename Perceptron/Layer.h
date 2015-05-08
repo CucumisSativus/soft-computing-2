@@ -11,9 +11,13 @@
 class Layer {
 public:
     Layer(const NeuronConfiguration &neuronConfiguration, int neuronsInLayer);
+    Layer();
+
     DataVector output(const DataVectors &inputs);
     Neuron neuronAt(unsigned long index);
     unsigned long neuronsCount();
+    DataVector prepareErrorForPropagation(DataVector const &errors, unsigned long nextLayerNeuronsNumber);
+
 private:
     std::vector<Neuron> neuronsVector;
 };

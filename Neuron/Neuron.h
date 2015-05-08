@@ -16,6 +16,8 @@ public:
     Neuron(const NeuronConfiguration & configuration);
     DataType output(DataVector const &inputs) const;
     DataVector train(DataVector const &inputs, DataType const &desiredOutput);
+    DataType weightAt(unsigned long index);
+    void updateWights(DataVector inputs, DataType error);
 private:
     void inline checkInputNumber(DataVector const &inputs) const;
     DataType inline computeH(DataType x);

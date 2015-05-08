@@ -6,6 +6,10 @@ ThreeLayerPerceptron::ThreeLayerPerceptron(const std::vector<unsigned> &neuronPe
         layersVector.push_back(Layer(neuronConfigurationsForLayer.at(i), neuronPerLayer.at(i)));
     }
 
+    inputLayer = layersVector.at(0);
+    hiddenLayer = layersVector.at(1);
+    outputLayer = layersVector.at(2);
+
     std::cout << "Layer 0 " <<layersVector.at(0).neuronsCount() << std::endl;
     std::cout << "Layer 1 " <<layersVector.at(1).neuronsCount() << std::endl;
     std::cout << "Layer 2 " <<layersVector.at(2).neuronsCount() << std::endl;
@@ -14,13 +18,14 @@ ThreeLayerPerceptron::ThreeLayerPerceptron(const std::vector<unsigned> &neuronPe
 
 DataVector ThreeLayerPerceptron::output(DataVector const & input) {
     DataVectors inputVectors = prepareInput(input);
-    DataVector inputLayerOutput = layersVector.at(0).output(inputVectors);
+    DataVector inputLayerOutput = inputLayer.output(inputVectors);
 
-    DataVectors hiddenLayerInputs(layersVector.at(1).neuronsCount(), inputLayerOutput);
-    DataVector hiddenLayerOutput = layersVector.at(1).output(hiddenLayerInputs);
 
-    DataVectors outputLayerInputs(layersVector.at(2).neuronsCount(), hiddenLayerOutput);
-    return layersVector.at(2).output(outputLayerInputs);
+    DataVectors hiddenLayerInputs(hiddenLayer.neuronsCount(), inputLayerOutput);
+    DataVector hiddenLayerOutput = hiddenLayer.output(hiddenLayerInputs);
+
+    DataVectors outputLayerInputs(outputLayer.neuronsCount(), hiddenLayerOutput);
+    return outputLayer.output(outputLayerInputs);
 
 }
 
@@ -33,3 +38,19 @@ DataVectors ThreeLayerPerceptron::prepareInput(DataVector const &input) {
     }
     return inputVectors;
 }
+
+void ThreeLayerPerceptron::train(DataVector const &inputs, DataVector const &desiredOutputs) {
+    DataVector outputs = output(inputs);
+    DataVector errors;
+    for(unsigned long i = 0; i< outputs.size(); ++i){
+        errors.push_back(desiredOutputs[i] - outputs[i]);
+    }
+
+    DataVector outputLayerErrorsToPropagate = outputLayer.prepareErrorForPropagation(errors, hiddenLayer.neuronsCount());
+    DataVector hiddenLayerErrorsToPropagate = hiddenLayer.prepareErrorForPropagation(outputLayerErrorsToPropagate, inputLayer.neuronsCount());
+
+    
+    
+    
+}
+

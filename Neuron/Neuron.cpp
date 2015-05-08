@@ -53,3 +53,15 @@ DataType inline Neuron::computeH(DataType x) {
     return h;
 }
 
+void Neuron::updateWights(DataVector inputs, DataType error) {
+    checkInputNumber(inputs);
+    for(unsigned long i =0; i< inputs.size(); ++i){
+        DataType x = inputs[i];
+        DataType delta = learningRate * error * function->computeDervative(computeH(x)) *x;
+        inputWeights[i] += delta;
+    }
+}
+
+DataType Neuron::weightAt(unsigned long index) {
+    return inputWeights.at(index);
+}

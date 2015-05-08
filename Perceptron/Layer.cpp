@@ -29,3 +29,16 @@ Neuron Layer::neuronAt(unsigned long index) {
 unsigned long Layer::neuronsCount() {
     return neuronsVector.size();
 }
+
+DataVector Layer::prepareErrorForPropagation(DataVector const &errors, unsigned long nextLayerNeuronsNumber) {
+    DataVector errorsToPropagate(nextLayerNeuronsNumber, 0);
+    for(unsigned long i =0; i < errors.size(); ++i){
+        for(unsigned long j=0; j < nextLayerNeuronsNumber; ++j) {
+            errorsToPropagate.at(i) += errors.at(i) * neuronsVector.at(i).weightAt(j);
+        }
+    }
+}
+
+Layer::Layer() {
+
+}
