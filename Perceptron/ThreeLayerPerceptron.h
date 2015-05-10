@@ -14,12 +14,12 @@ public:
     ThreeLayerPerceptron(const std::vector<unsigned> &neuronPerLayer,
                          std::vector<NeuronConfiguration> const &neuronConfigurationsForLayer);
     DataVector output(const DataVector & input);
-    void train(DataVector const & inputs, DataVector const & desiredOutputs);
+    void train(DataVector const & inputs, DataVector const &desiredOutput);
 
 private:
     std::vector<Layer> layersVector;
 
-    DataVectors prepareInput(DataVector const &input);
+    DataVectors prepareInputForInputLayer(DataVector const &input);
     Layer inputLayer;
     Layer hiddenLayer;
     Layer outputLayer;

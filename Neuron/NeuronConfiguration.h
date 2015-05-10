@@ -12,6 +12,7 @@ class NeuronConfiguration {
 public:
     NeuronConfiguration(int inputNumber, ActivationFunction *function, DataType neuronInitialWeights,
                         DataType learningRate);
+    NeuronConfiguration(int inputNumber, ActivationFunction *function, DataType learningRate);
     NeuronConfiguration(const NeuronConfiguration & original);
     int getInputNumber() const;
     void setInputNumber(int inputNumber);
@@ -26,6 +27,7 @@ private:
     ActivationFunction *function;
     DataType neuronInitialWeights;
     DataType learningRate;
+    bool randomWeights;
 };
 
 

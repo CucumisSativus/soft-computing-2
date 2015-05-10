@@ -2,8 +2,8 @@
 // Created by Michał Gutowski on 07.05.15.
 //
 
-#ifndef 3LAYERPERCEPTRON_SIGMOIDALFUNCTION_H
-#define 3LAYERPERCEPTRON_SIGMOIDALFUNCTION_H
+#ifndef LAYERPERCEPTRON_SIGMOIDALFUNCTION_H
+#define LAYERPERCEPTRON_SIGMOIDALFUNCTION_H
 
 #include "ActivationFunction.h"
 #include <cmath>
