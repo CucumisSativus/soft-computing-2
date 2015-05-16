@@ -5,6 +5,8 @@
 #ifndef LAYERPERCEPTRON_NEURONCONFIGURATION_H
 #define LAYERPERCEPTRON_NEURONCONFIGURATION_H
 
+#include <random>
+#include <time.h>
 #include "../ActivationFunctions/ActivationFunction.h"
 #include "../Defines.h"
 
@@ -22,12 +24,15 @@ public:
     void setNeuronInitialWeights(DataType neuronInitialWeights);
     DataType getLearningRate() const;
     void setLearningRate(DataType learningRate);
+    void allowBias();
 private:
     int inputNumber;
     ActivationFunction *function;
     DataType neuronInitialWeights;
     DataType learningRate;
     bool randomWeights;
+    std::uniform_real_distribution<double> distribution;
+    std::default_random_engine engine;
 };
 
 

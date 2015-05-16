@@ -10,7 +10,7 @@
 
 class Layer {
 public:
-    Layer(const NeuronConfiguration &neuronConfiguration, int neuronsInLayer);
+    Layer(const NeuronConfiguration &neuronConfiguration, int neuronsInLayer, bool allowBias, bool withBias);
     Layer();
 
     DataVector output(const DataVectors &prepared_inputs);
@@ -22,6 +22,7 @@ public:
     void updateNeuronsWeights(DataVector const &raw_inputs, DataVector const &errors);
 private:
     std::vector<Neuron> neuronsVector;
+    bool allowBias;
 };
 
 

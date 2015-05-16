@@ -6,15 +6,18 @@
 #define LAYERPERCEPTRON_THREELAYERPERCEPTRON_H
 
 #include <vector>
+#include <iostream>
 #include "../Defines.h"
 #include "Layer.h"
 
 class ThreeLayerPerceptron {
 public:
     ThreeLayerPerceptron(const std::vector<unsigned> &neuronPerLayer,
-                         std::vector<NeuronConfiguration> const &neuronConfigurationsForLayer);
+                             std::vector<NeuronConfiguration> const &neuronConfigurationsForLayer, bool withBias,
+                             bool showDebug);
     DataVector output(const DataVector & input);
     void train(DataVector const & inputs, DataVector const &desiredOutput);
+    void displayLayerOutput(unsigned long layerNumber, const DataVector &vec);
 
 private:
     std::vector<Layer> layersVector;
@@ -23,6 +26,8 @@ private:
     Layer inputLayer;
     Layer hiddenLayer;
     Layer outputLayer;
+    bool withBias;
+    bool showDebug;
 };
 
 

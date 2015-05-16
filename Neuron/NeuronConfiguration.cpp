@@ -36,6 +36,12 @@ void NeuronConfiguration::setFunction(ActivationFunction *function) {
 }
 
 DataType NeuronConfiguration::getNeuronInitialWeights() const {
+    if(randomWeights){
+        std::uniform_real_distribution<double> distribution(-0.5, 0.5);
+        std::default_random_engine engine;
+        double rate = distribution(engine);
+        return rate;
+    }
     return neuronInitialWeights;
 }
 
@@ -44,15 +50,7 @@ void NeuronConfiguration::setNeuronInitialWeights(DataType neuronInitialWeights)
 }
 
 DataType NeuronConfiguration::getLearningRate() const {
-    if(randomWeights){
-        std::uniform_real_distribution<double> distribution(-0.5, 0.5);
-        std::default_random_engine engine;
-        double rate = distribution(engine);
-        return rate;
-    }
-    else {
         return learningRate;
-    }
 }
 
 void NeuronConfiguration::setLearningRate(DataType learningRate) {
@@ -62,4 +60,8 @@ void NeuronConfiguration::setLearningRate(DataType learningRate) {
 NeuronConfiguration::NeuronConfiguration(int inputNumber, ActivationFunction *function, DataType learningRate)
         : inputNumber(inputNumber), function(function), learningRate(learningRate), randomWeights(true) {
 
+}
+
+void NeuronConfiguration::allowBias() {
+    inputNumber++;
 }

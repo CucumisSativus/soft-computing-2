@@ -5,9 +5,19 @@
 #include "Layer.h"
 
 
-Layer::Layer(const NeuronConfiguration &neuronConfiguration, int neuronsInLayer) {
+Layer::Layer(const NeuronConfiguration &neuronConfiguration, int neuronsInLayer, bool allowBias, bool withBias) : allowBias(allowBias) {
     for(int i =0; i< neuronsInLayer; ++i){
-        neuronsVector.push_back(Neuron(neuronConfiguration));
+        if(allowBias){
+            NeuronConfiguration conf = neuronConfiguration;
+            conf.allowBias();
+            neuronsVector.push_back(Neuron(conf));
+        }
+        else{
+            neuronsVector.push_back(Neuron(neuronConfiguration));
+        }
+    }
+    if(withBias){
+        neuronsVector.push_back(Neuron(neuronConfiguration.getFunction(), neuronConfiguration.getInputNumber(), 0, 0, true));
     }
 
 }
@@ -40,11 +50,11 @@ unsigned long Layer::neuronsCount() {
 DataVector Layer::prepareErrorForPropagation(DataVector const &errors, unsigned long nextLayerNeuronsNumber) {
     DataVector errorsToPropagate(nextLayerNeuronsNumber, 0);
     for(unsigned long neuronInNextLayerIndex =0; neuronInNextLayerIndex < nextLayerNeuronsNumber; ++neuronInNextLayerIndex){
-        for(unsigned long errorIndex =0; errorIndex < errors.size(); ++errorIndex) {
+        for(unsigned long neuronInCurrentLayerIndex =0; neuronInCurrentLayerIndex < errors.size(); ++neuronInCurrentLayerIndex) {
             DataType neuronWeight = neuronsVector.at(
-                                neuronInNextLayerIndex).weightAt(
+                    neuronInCurrentLayerIndex).weightAt(
                                 neuronInNextLayerIndex);
-            errorsToPropagate.at(neuronInNextLayerIndex) += errors.at(errorIndex) * neuronWeight;
+            errorsToPropagate.at(neuronInNextLayerIndex) += errors.at(neuronInCurrentLayerIndex) * neuronWeight;
         }
     }
     return errorsToPropagate;
@@ -55,7 +65,7 @@ Layer::Layer() {
 }
 
 void Layer::updateNeuronsWeights(DataVectors const &inputs, DataVector const &errors) {
-    if(errors.size() != neuronsVector.size() || inputs.size() != neuronsVector.size()){
+    if (errors.size() != neuronsVector.size() || inputs.size() != neuronsVector.size()) {
         throw std::invalid_argument("number od data vectors must match neurons in layer number");
     }
 

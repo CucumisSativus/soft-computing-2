@@ -1,9 +1,12 @@
 #include "ThreeLayerPerceptron.h"
-#include <iostream>
 ThreeLayerPerceptron::ThreeLayerPerceptron(const std::vector<unsigned> &neuronPerLayer,
-                                           std::vector<NeuronConfiguration> const &neuronConfigurationsForLayer){
+                         std::vector<NeuronConfiguration> const &neuronConfigurationsForLayer, bool withBias,
+                         bool showDebug) : withBias(withBias), showDebug(showDebug){
     for(unsigned long i = 0; i< neuronPerLayer.size(); ++i){
-        layersVector.push_back(Layer(neuronConfigurationsForLayer.at(i), neuronPerLayer.at(i)));
+        bool allowBias = (i == 1 || i == 2) && withBias;
+        bool withBiasNeuron = (i == 0 || i == 1) && withBias;
+        layersVector.push_back(Layer(neuronConfigurationsForLayer.at(i), neuronPerLayer.at(i), allowBias,
+                                     withBiasNeuron));
     }
 
     inputLayer = layersVector.at(0);
@@ -14,11 +17,15 @@ ThreeLayerPerceptron::ThreeLayerPerceptron(const std::vector<unsigned> &neuronPe
 DataVector ThreeLayerPerceptron::output(DataVector const & input) {
     DataVectors inputVectors = prepareInputForInputLayer(input);
     DataVector inputLayerOutput = inputLayer.output(inputVectors);
-
+    displayLayerOutput(0, inputLayerOutput);
 
     DataVector hiddenLayerOutput = hiddenLayer.output(inputLayerOutput);
+    displayLayerOutput(1, hiddenLayerOutput);
 
-    return outputLayer.output(hiddenLayerOutput);
+    DataVector outputLayerOutput = outputLayer.output(hiddenLayerOutput);
+    displayLayerOutput(2, outputLayerOutput);
+
+    return outputLayerOutput;
 
 }
 
@@ -29,6 +36,9 @@ DataVectors ThreeLayerPerceptron::prepareInputForInputLayer(DataVector const &in
         tmp.push_back(*it);
         inputVectors.push_back(tmp);
     }
+    if(withBias){
+        inputVectors.push_back(DataVector {0});
+    }
     return inputVectors;
 }
 
@@ -36,7 +46,7 @@ void ThreeLayerPerceptron::train(DataVector const &inputs, DataVector const &des
     DataVector outputs = output(inputs);
     DataVector errors;
     for(unsigned long i = 0; i< outputs.size(); ++i){
-        errors.push_back((desiredOutput.at(i) - outputs.at(i)) * (outputs.at(i) * (1 - outputs.at(i))));
+        errors.push_back((desiredOutput.at(i) - outputs.at(i)));
     }
 
     DataVector outputLayerErrorsToPropagate = outputLayer.prepareErrorForPropagation(errors, hiddenLayer.neuronsCount());
@@ -49,3 +59,12 @@ void ThreeLayerPerceptron::train(DataVector const &inputs, DataVector const &des
     outputLayer.updateNeuronsWeights(hiddenLayerOutput, errors);
 }
 
+void ThreeLayerPerceptron::displayLayerOutput(unsigned long layerNumber, const DataVector &vec) {
+    if(showDebug){
+        std::cout << layerNumber;
+        for(DataVector::const_iterator it = vec.cbegin(); it != vec.cend(); ++it){
+            std::cout << " " << *it;
+        }
+        std::cout << std::endl;
+    }
+}

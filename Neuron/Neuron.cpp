@@ -4,8 +4,8 @@
 
 #include "Neuron.h"
 
-Neuron::Neuron(ActivationFunction *func, int inputNumber, DataType defaultWeight, DataType learningRate)
-        : function(func), inputWeights(inputNumber, defaultWeight), learningRate(learningRate) {
+Neuron::Neuron(ActivationFunction *func, int inputNumber, DataType defaultWeight, DataType learningRate, bool biased)
+        : function(func), inputWeights(inputNumber, defaultWeight), learningRate(learningRate), biased(biased) {
 
 }
 
@@ -17,12 +17,20 @@ Neuron::Neuron(const NeuronConfiguration &configuration)
 }
 
 DataType Neuron::output(DataVector const &inputs) const {
+    if(biased){
+        return 1;
+    }
     checkInputNumber(inputs);
+    DataType weightedSum = computeWeightedSum(inputs);
+    return function->compute(weightedSum);
+}
+
+DataType Neuron::computeWeightedSum(const DataVector &inputs) const {
     DataType weightedSum = 0;
     for (unsigned long i = 0; i < inputs.size(); ++i) {
         weightedSum += inputs[i] * inputWeights[i];
     }
-    return function->compute(weightedSum);
+    return weightedSum;
 }
 
 DataVector Neuron::train(DataVector const &inputs, DataType const &desiredOutput) {
@@ -31,8 +39,8 @@ DataVector Neuron::train(DataVector const &inputs, DataType const &desiredOutput
     for (unsigned long i = 0; i < inputs.size(); ++i) {
         DataType outputError = desiredOutput - output(inputs);
         DataType x = inputs[i];
-        DataType derivativeValue = function->computeDervative(computeH(x));
-        deltas[i] = learningRate * outputError * function->computeDervative(computeH(x)) * x;
+        DataType derivativeValue = function->computeDervative(computeWeightedSum(inputs));
+        deltas[i] = learningRate * outputError * derivativeValue * x;
 
         inputWeights[i] += deltas[i];
     }
@@ -54,6 +62,9 @@ DataType inline Neuron::computeH(DataType x) {
 }
 
 void Neuron::updateWights(DataVector inputs, DataType error) {
+    if(biased){
+        return;
+    }
     checkInputNumber(inputs);
     for(unsigned long i =0; i< inputs.size(); ++i){
         DataType x = inputs[i];
