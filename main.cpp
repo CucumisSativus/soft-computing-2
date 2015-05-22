@@ -24,9 +24,9 @@ void printOutputForSet(ThreeLayerPerceptron & perceptron, DataVector const & inp
 }
 int main() {
     std::vector<unsigned> neuronsPerLayer {4,2,4};
-    NeuronConfiguration inputLayerConfiguration(1, new LinearFunction(), 0.3);
-    NeuronConfiguration hiddenLayerConfiguration(4, new SigmoidalFunction(), 0.3);
-    NeuronConfiguration outputLayerConfiguration(2, new SigmoidalFunction(), 0.3);
+    NeuronConfiguration inputLayerConfiguration(1, new LinearFunction(), 1, 0.5);
+    NeuronConfiguration hiddenLayerConfiguration(4, new SigmoidalFunction(), 0.5);
+    NeuronConfiguration outputLayerConfiguration(2, new SigmoidalFunction(), 0.5);
 
     std::vector<NeuronConfiguration> neuronConfigurationsPerLayer;
     neuronConfigurationsPerLayer.push_back(inputLayerConfiguration);

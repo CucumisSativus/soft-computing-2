@@ -50,12 +50,9 @@ void ThreeLayerPerceptron::train(DataVector const &inputs, DataVector const &des
     }
 
     DataVector outputLayerErrorsToPropagate = outputLayer.prepareErrorForPropagation(errors, hiddenLayer.neuronsCount());
-
     DataVector inputLayerOutput = inputLayer.output(prepareInputForInputLayer(inputs));
-
-    DataVector hiddenLayerOutput = hiddenLayer.output(inputLayerOutput);
-
     hiddenLayer.updateNeuronsWeights(inputLayerOutput, outputLayerErrorsToPropagate);
+    DataVector hiddenLayerOutput = hiddenLayer.output(inputLayerOutput);
     outputLayer.updateNeuronsWeights(hiddenLayerOutput, errors);
 }
 

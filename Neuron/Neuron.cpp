@@ -68,7 +68,7 @@ void Neuron::updateWights(DataVector inputs, DataType error) {
     checkInputNumber(inputs);
     for(unsigned long i =0; i< inputs.size(); ++i){
         DataType x = inputs[i];
-        DataType delta = learningRate * error * function->computeDervative(computeH(x)) *x;
+        DataType delta = learningRate * error * function->computeDervative(computeWeightedSum(inputs)) *x;
         inputWeights[i] += delta;
     }
 }
